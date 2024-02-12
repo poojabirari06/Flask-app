@@ -4,7 +4,7 @@ from datetime import datetime
 import mysql.connector
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:password@dev-notes-app.cz8hjury5hco.us-east-1.rds.amazonaws.com/dev-notes-app'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:password@dev-notes-app.cz8hjury5hco.us-east-1.rds.amazonaws.com/devnotesapp'
 db = SQLAlchemy(app)
 
 class Note(db.Model):
