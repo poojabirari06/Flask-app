@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import mysql.connector
 import boto3
+import json
 
 # Retrieve database credentials from AWS Secrets Manager
 secrets_manager = boto3.client('secretsmanager', region_name= 'us-east-1')
