@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import mysql.connector
+import boto3
 
 # Retrieve database credentials from AWS Secrets Manager
 secrets_manager = boto3.client('secretsmanager')
