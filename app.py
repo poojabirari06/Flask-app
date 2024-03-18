@@ -3,8 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import mysql.connector
 
+# Retrieve database credentials from AWS Secrets Manager
+secrets_manager = boto3.client('secretsmanager')
+secret_name = 'credentials'
+
+response = secrets_manager.get_secret_value(SecretId=secret_name)
+secret_data = response['SecretString']
+credentials = json.loads(secret_data)
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:password@terraform-db.c1asyqik8ajm.us-east-1.rds.amazonaws.com/terraform_db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:password@terraform-db.c1asyqik8ajm.us-east-1.rds.amazonaws.com/terraform_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{credentials['username']}:{credentials['password']}@{credentials['host']}/{credentials['database_name']}"
 db = SQLAlchemy(app)
 
 class Note(db.Model):
