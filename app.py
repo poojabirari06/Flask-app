@@ -15,7 +15,7 @@ credentials = json.loads(secret_data)
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:password@terraform-db.c1asyqik8ajm.us-east-1.rds.amazonaws.com/terraform_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{credentials['username']}:{credentials['password']}@{credentials['host']}/{credentials['database_name']}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{credentials['username']}:{credentials['password']}@{credentials['host']}/{credentials['db_name']}"
 db = SQLAlchemy(app)
 
 class Note(db.Model):
