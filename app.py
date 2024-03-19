@@ -6,7 +6,7 @@ import boto3
 import json
 
 # Retrieve database credentials from AWS Secrets Manager
-secrets_manager = boto3.client('secretsmanager': region_name= 'us-east-1')
+secrets_manager = boto3.client('secretsmanager', region_name= 'us-east-1')
 secret_name = 'credentials'
 
 response = secrets_manager.get_secret_value(SecretId=secret_name)
