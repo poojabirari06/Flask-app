@@ -1,36 +1,36 @@
-node {
-    def app
-
-    stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
-
-        checkout scm
-    }
-
-    stage('Build image') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
-
-        app = docker.build("getintodevops/hellonode")
-    }
-
-    stage('Test image') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
-
-        app.inside {
-            sh 'echo "Tests passed"'
+pipeline {
+    agent any
+    stages{
+        stage('code'){
+            steps{
+                git url: 'https://github.com/poojabirari06/Flask-app.git', branch: 'main', credentialsId: 'poojabirari06'
+            }
         }
-    }
-
-    stage('Push image') {
-        /* Finally, we'll push the image with two tags:
-         * First, the incremental build number from Jenkins
-         * Second, the 'latest' tag.
-         * Pushing multiple tags is cheap, as all the layers are reused. */
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+        
+        stage('Build'){
+            steps{
+                sh 'docker build -t  my-ecr-repo .'
+            }
         }
+        stage('Tag'){
+            steps{
+                sh 'docker tag my-ecr-repo:latest 211125338459.dkr.ecr.us-east-1.amazonaws.com/my-ecr-repo:latest'
+            }
+        }
+        stage('Login'){
+            steps{
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125338459.dkr.ecr.us-east-1.amazonaws.com'
+            }
+        }
+        stage('Push'){
+            steps{
+                sh 'docker push 211125338459.dkr.ecr.us-east-1.amazonaws.com/my-ecr-repo:latest'
+            }
+        }
+        stage('Deploy'){
+            steps{
+                sh 'aws autoscaling start-instance-refresh --auto-scaling-group-name terraform_asg' 
+            }
     }
+}
 }
